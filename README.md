@@ -46,3 +46,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ### Every time your Prisma schema file is changing by running the following command
 
 `npx prisma generate`
+
+### Seed DB
+
+`npx prisma db seed`
