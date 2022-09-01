@@ -1,6 +1,8 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { users } from '../data/users';
 import { profiles } from '../data/profiles';
+import { tasks } from '../data/tasks';
+import { rewards } from '../data/rewards';
 
 const prisma = new PrismaClient();
 
@@ -12,9 +14,17 @@ async function main() {
     data: users,
   });
 
-  await prisma.profile.createMany({
-    data: profiles,
-  });
+  // await prisma.profile.createMany({
+  //   data: profiles,
+  // });
+
+  // await prisma.task.createMany({
+  //   data: tasks,
+  // });
+
+  // await prisma.reward.createMany({
+  //   data: rewards,
+  // });
 
   console.log('-----------------');
   console.log(`Seeding finished.`);

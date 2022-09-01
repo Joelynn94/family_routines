@@ -8,14 +8,20 @@ import prisma from '../lib/prisma';
 export type UserProps = {
   id: string;
   name: string;
-  email: boolean;
-  emailVerified: Date;
   image: string;
+  email: boolean;
+  emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
   profile: {
     id: string;
     bio: string;
+    user_id: string;
+    age: number;
+    birthday: Date;
+    mood: string;
+    favoriteFood: string;
+    favoriteColor: string;
     userId: string;
   } | null;
 };
@@ -24,18 +30,16 @@ export type UserProps = {
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const dbUsers = await prisma.user.findMany({
-      include: {
-        profile: {
-          select: { bio: true },
-        },
-      },
+      include: { profile: true },
     });
     console.log(dbUsers);
 
     const users = dbUsers.map((user) => {
-      user.emailVerified = JSON.parse(JSON.stringify(user?.emailVerified));
       user.createdAt = JSON.parse(JSON.stringify(user?.createdAt));
       user.updatedAt = JSON.parse(JSON.stringify(user?.updatedAt));
+
+      if (!user.profile) return user;
+      user.profile.birthday = JSON.parse(JSON.stringify(user?.profile.birthday));
 
       return user;
     });

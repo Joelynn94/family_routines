@@ -7,20 +7,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+  PARENT
+  CHILD
+}
+
 model User {
-  id            String    @id @default(uuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  id            String   @id @default(uuid())
+  name          String
+  role          Role     @default(USER)
+  email         String?  @unique
+  emailVerified Boolean? @default(false) @map(name: "email_verified")
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @updatedAt @map(name: "updated_at")
   profile       Profile?
 }
 
 model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id])
+  id            String        @id @default(uuid())
+  image         String?
+  age           Int?
+  birthday      DateTime?
+  bio           String?
+  mood          String?
+  schoolGrade   String?       @map(name: "school_grade")
+  favoriteFood  String?       @map(name: "favorite_food")
+  favoriteColor String?       @map(name: "favorite_color")
+  userId        String?       @unique @map(name: "user_id")
+  user          User?         @relation(fields: [userId], references: [id])
+  achievments   Achievments[]
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  status      String?
+  complete    Boolean @default(false)
+}
+
+model Reward {
+  id           String        @id @default(uuid())
+  image        String?
+  message      String
+  rewardAmount Int           @map(name: "reward_amount")
+  achievments  Achievments[]
+}
+
+model Achievments {
+  id          String   @id @default(uuid())
+  profile     Profile? @relation(fields: [profileId], references: [id])
+  profileId   String?  @map(name: "profile_id")
+  reward      Reward?  @relation(fields: [rewardId], references: [id])
+  rewardId    String?  @map(name: "reward_id")
+  completedOn DateTime @default(now()) @map(name: "completed_on")
 }
